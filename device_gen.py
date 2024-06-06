@@ -9,9 +9,13 @@ from .xgorgon import Xgorgon
 
 
 class Applog:
-    def __init__(self, device: dict, proxy = None):
+    def __init__(self, device: dict, proxy):
         self.__device = device
         self.__host = "log-va.tiktokv.com"
+        self.proxies = {
+            "http": f"http://{proxy}",
+            "https": f"http://{proxy}",
+        }
 
     def __headers(self, params: str, payload: (str or bool) = None) -> dict: # type: ignore
         sig = Xgorgon().calculate(params, payload, None)
