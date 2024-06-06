@@ -1,6 +1,5 @@
 import hashlib
 import random
-import struct
 import json
 import time
 
@@ -97,7 +96,7 @@ class Gorgon:
         for param in eor_result_list:
             result += self.hex_string(param)
 
-        return {"X-Gorgon": ("0404b0d30000" + result), "X-Khronos": str(unix)}
+        return {"x-gorgon": ("0404b0d30000" + result), "x-khronos": str(unix)}
 
     def rbit_algorithm(self, num):
         result = ""
@@ -163,7 +162,7 @@ class Xgorgon:
     LEN = 20
 
     def calculate(
-        self, params: str, cookie: (bool or str) = None, body: (bool or str) = None
+        self, params: str, cookie: (bool or str) = None, body: (bool or str) = None # type: ignore
     ):
 
         self.hex_str = random.choice(self.HEX_STRS)
@@ -183,8 +182,8 @@ class Xgorgon:
         hash_4 = self.__hex2str(self.hex_str[6])
 
         return {
-            "X-Gorgon": "0404{}{}{}{}{}".format(hash_1, hash_2, hash_3, hash_4, result),
-            "X-Khronos": str(hash["time"]),
+            "x-gorgon": "0404{}{}{}{}{}".format(hash_1, hash_2, hash_3, hash_4, result),
+            "x-khronos": str(hash["time"]),
         }
 
     def charCodeAt(self, str, i):
@@ -232,8 +231,8 @@ class Xgorgon:
     def getGorgonHash(
         self,
         url: str,
-        data: (bool or str) = None,
-        cookie: (bool or str) = None,
+        data: (bool or str) = None, # type: ignore
+        cookie: (bool or str) = None, # type: ignore
         encoding="UTF-8",
     ):
         gorgon = []
