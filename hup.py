@@ -149,15 +149,3 @@ def view(video):
 
         except Exception as e:
             pass
-
-if __name__ == "__main__":
-    try:
-        link = input("Enter video link: ")
-        video = str(re.findall(r"(\d{18,19})", link)[0] if len(re.findall(r"(\d{18,19})", link)) == 1 else
-                         re.findall(r"(\d{18,19})", requests.head(link, allow_redirects=True, timeout=5).url)[0])
-    except:
-        exit("Invalid link")
-
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-    view(video)
