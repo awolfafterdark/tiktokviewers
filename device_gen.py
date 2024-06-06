@@ -1,24 +1,19 @@
-import random, json, time, hashlib, requests, curlify, base64, sys, colorama, datetime, urllib.parse, threading, uuid, binascii, os
+import json, time, hashlib, requests
 
 from urllib.parse import *
-from constants import *
-from ttencrypt import TTEncrypt
-from xgorgon import Xgorgon
-from device import Device
+from .constants import *
+from .ttencrypt import TTEncrypt
+from .xgorgon import Xgorgon
 
 
 
 
 class Applog:
-    def __init__(self, device: dict, proxy):
+    def __init__(self, device: dict, proxy = None):
         self.__device = device
         self.__host = "log-va.tiktokv.com"
-        self.proxies = {
-            "http": f"http://{proxy}",
-            "https": f"http://{proxy}",
-        }
 
-    def __headers(self, params: str, payload: (str or bool) = None) -> dict:
+    def __headers(self, params: str, payload: (str or bool) = None) -> dict: # type: ignore
         sig = Xgorgon().calculate(params, payload, None)
 
         headers = {
@@ -37,8 +32,8 @@ class Applog:
                 + f"Build/{self.__device['build']}; "
                 + "Cronet/TTNetVersion:5f9640e3 2021-04-21 QuicVersion:47946d2a 2020-10-14)"
             ),
-            "X-Gorgon": sig["X-Gorgon"],
-            "X-Khronos": str(sig["X-Khronos"]),
+            "x-gorgon": sig["x-gorgon"],
+            "x-khronos": str(sig["x-khronos"]),
         }
 
         return headers
@@ -127,13 +122,13 @@ class Applog:
                 "openudid": self.__device["openudid"],
                 "clientudid": self.__device["clientudid"],
                 "region": self.__device["region"],
-                "tz_name": f"{self.__device['timezone_name'].split('/')[0]}\/{self.__device['timezone_name'].split('/')[1]}",
+                "tz_name": f"{self.__device['timezone_name'].split('/')[0]}/{self.__device['timezone_name'].split('/')[1]}",
                 "tz_offset": self.__device["offset"],
                 "req_id": self.__device["req_id"],
                 "custom": {
                     "is_kids_mode": 0,
                     "filter_warn": 0,
-                    "web_ua": f"Dalvik\/2.1.0 (Linux; U; Android {self.__device['os']}; {self.__device['device_model']} Build\/{self.__device['build']})",
+                    "web_ua": f"Dalvik/2.1.0 (Linux; U; Android {self.__device['os']}; {self.__device['device_model']} Build/{self.__device['build']})",
                     "user_period": 0,
                     "user_mode": -1,
                 },
@@ -156,10 +151,9 @@ class Applog:
         payload = self.__payload()
 
         r = requests.post(
-            url=("http://" + self.__host + "/service/2/device_register/?" + params),
+            url=("https://" + self.__host + "/service/2/device_register/?" + params),
             headers=self.__headers(params),
             data=bytes.fromhex(self.__tt_encryption(payload)),
-            #proxies=self.proxies,
         )
 
         if r.json()["device_id"] == 0 or r.json()["device_id"] == "0":
@@ -169,15 +163,10 @@ class Applog:
 
 
 class Xlog:
-    def __init__(self, __device_id, proxy):
+    def __init__(self, __device_id):
         self.__device_id = __device_id
-        self.proxies = {
-            "http": f"http://{proxy}",
-            "https": f"http://{proxy}",
-        }
 
     def bypass(self):
-
         params = urlencode(
             {
                 "os": "0",
@@ -196,13 +185,13 @@ class Xlog:
             "cookie": "sessionid=",
             "x-ss-req-ticket": str("".join(str(time.time()).split(".")))[:13],
             "x-tt-dm-status": "login=0;ct=0",
-            "X-Gorgon": sig["X-Gorgon"],
-            "X-Khronos": str(sig["X-Khronos"]),
+            "x-gorgon": sig["x-gorgon"],
+            "x-khronos": str(sig["x-khronos"]),
             "host": "xlog-va.tiktokv.com",
             "connection": "Keep-Alive",
             "user-agent": "okhttp/3.10.0.1",
         }
 
-        url = "https://xlog-va.tiktokv.com/v2/s/?" + params
+        url = "https://xlog-va.tiktokv.com/v2/s?" + params
 
         response = requests.get(url, headers=headers)
