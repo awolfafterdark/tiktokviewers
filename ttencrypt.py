@@ -1,8 +1,7 @@
 import binascii
 import gzip
 import random
-
-from Cryptodome.Cipher import AES
+from Crypto.Cipher import AES 
 
 
 class TTEncrypt:
