@@ -4,7 +4,7 @@ from urllib.parse import *
 from constants import *
 from ttencrypt import TTEncrypt
 from xgorgon import Xgorgon
-
+from device import Device
 
 
 
