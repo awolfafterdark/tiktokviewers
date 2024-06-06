@@ -2,7 +2,7 @@ import os
 import random
 import time, base64, datetime, pytz, uuid, binascii
 
-from .constants import *
+from constants import *
 
 
 class Device:
